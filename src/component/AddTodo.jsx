@@ -8,6 +8,7 @@ const AddTodo = () => {
  
   useEffect(() => {
     const storedTodo = JSON.parse(localStorage.getItem("todo")) || [];
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTodo(Array.isArray(storedTodo) ? storedTodo : []);
   }, []);
 

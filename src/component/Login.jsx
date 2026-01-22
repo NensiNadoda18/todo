@@ -14,9 +14,9 @@ const Login = () => {
     console.log("paas",pass)
     const submit=async(e)=>
     {
-         if (!name || !pass)
+       e.preventDefault()
+       if (!name || !pass)
             setMessage("Please fill the field")
-        e.preventDefault()
        if(user!=name && password!=pass)
             setMessage("username and password  is wrong")
        else

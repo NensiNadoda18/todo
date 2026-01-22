@@ -11,10 +11,10 @@ const ViewTodo = ({ todo, setTodo }) => {
     const newValue = prompt("Edit your todo", todo[index]);
 
     if (newValue !== null && newValue.trim() !== "") {
-      const updatedTodo = [...todo];
-      updatedTodo[index] = newValue;
+      const updatedTodo=[...todo];
+      updatedTodo[index]=newValue;
       setTodo(updatedTodo);
-      localStorage.setItem("todo", JSON.stringify(updatedTodo));
+      localStorage.setItem("todo",JSON.stringify(updatedTodo));
     }
   };
 

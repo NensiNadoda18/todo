@@ -1,46 +1,70 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useForm,Controller } from 'react-hook-form'
 import './Login.css'
 
 
 const Login = () => {
-    const [name,setName]=useState('')
-    const [pass,setPass]=useState('')
-    const [message,setMessage]=useState('')
-    const navigate=useNavigate()
-    const user="nensi";
-    const password="nensi123"
-    console.log("name",name)
-    console.log("paas",pass)
-    const submit=async(e)=>
-    {
-       e.preventDefault()
-       if (!name || !pass)
-            setMessage("Please fill the field")
-       if(user!=name && password!=pass)
-            setMessage("username and password  is wrong")
-       else
-            navigate("/addbook")
+  const {
+    control,
+    handleSubmit,
+    formState: { errors }
+  } = useForm()
+
+  const [message, setMessage] = useState("")
+  const navigate = useNavigate()
+
+  const submit = (data) => {
+    setMessage("")
+
+    if (data.username !== "nensi" || data.password !== "nensi123") {
+      setMessage("Username or password is wrong")
+      return
     }
 
+    navigate("/addbook")
+  }
 
   return (
-    <div  className='login'>
+    <div className="login">
+      <form onSubmit={handleSubmit(submit)} className="box">
+        <h2>Login</h2>
 
-      <form onSubmit={submit} className='box' >
-       
-         <h2 > Login</h2>
-       
-        <input type='text' placeholder='Username' id='user'  onChange={(e)=>setName(e.target.value)}/><br/>
-       
-        <input type='password' placeholder='password' id='pass'  onChange={(e)=>setPass(e.target.value)}/><br/>
-       
-        <button>Login</button> 
-       
-        <p>{message}</p>
+        <Controller
+          name="username"
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <input {...field} placeholder="Enter email" />
+          )}
+        />
+        {errors.username && (
+          <p className="error">Username is required</p>
+        )}
+
+        <Controller
+          name="password"
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <input
+              {...field}
+              type="password"
+              placeholder="Enter password"
+            />
+          )}
+        />
+        {errors.password && (
+          <p className="error">Password is required</p>
+        )}
+
+        <button type="submit">Login</button>
+
+        {message && <p className="error">{message}</p>}
       </form>
- </div>
+    </div>
   )
 }
+
 
 export default Login

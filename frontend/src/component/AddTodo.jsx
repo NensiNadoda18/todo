@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import ViewTodo from "./ViewTodo";
+import axios from 'axios'
 
 const AddTodo = () => {
   const [inputTodo, setInputTodo] = useState("");
@@ -7,20 +8,38 @@ const AddTodo = () => {
 
  
   useEffect(() => {
-    const storedTodo = JSON.parse(localStorage.getItem("todo")) || [];
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setTodo(Array.isArray(storedTodo) ? storedTodo : []);
+    const fetchtodos=async()=>{
+      try{
+        const token=localStorage.getItem('token')
+        const res=await axios.get('http://localhost:5000/get',{
+          headers:{Authorization:`Bearer ${token}`}
+        });
+        setTodo(res.data)
+      }
+      catch(error)
+        {
+          console.log(error.message)
+        }
+      
+    }
+    fetchtodos()
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
 
     if (inputTodo.trim() === "") return;
-
-    const updatedTodo = [...todo, inputTodo];
-    setTodo(updatedTodo);
-    localStorage.setItem("todo", JSON.stringify(updatedTodo));
-    setInputTodo("");
+    try{
+      const token=localStorage.getItem("token")
+      const res=await axios.post('http://localhost:5000/add',
+        {todo:inputTodo},
+        {headers:{Authorization:`Bearer ${token}`}}
+      )
+      setTodo([...todo,res.data])
+      setInputTodo("")
+    }catch(error){
+      console.log("error:",error.message)
+    }
   };
 
   return (

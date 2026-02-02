@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm,Controller } from 'react-hook-form'
+import axios from 'axios'
 import './Login.css'
 
 
@@ -9,20 +10,31 @@ const Login = () => {
     control,
     handleSubmit,
     formState: { errors }
-  } = useForm()
+  } = useForm({
+    defaultValues:{
+      username:"",
+      password:""
+    }
+  })
 
   const [message, setMessage] = useState("")
   const navigate = useNavigate()
 
-  const submit = (data) => {
-    setMessage("")
+  const submit = async(data,e) => {
+    console.log("ddata:",data)
+    e.preventDefault()
+    try{
+       setMessage("")
 
-    if (data.username !== "nensi" || data.password !== "nensi123") {
-      setMessage("Username or password is wrong")
-      return
+      const res=await axios.post('http://localhost:5000/login',data)
+
+      localStorage.setItem('token',res.data.token)
+        navigate("/addbook")
     }
-
-    navigate("/addbook")
+    catch(error)
+    {
+      setMessage(error.message)
+    }
   }
 
   return (
@@ -35,7 +47,8 @@ const Login = () => {
           control={control}
           rules={{ required: true }}
           render={({ field }) => (
-            <input {...field} placeholder="Enter email" />
+            <input {...field} placeholder="Enter Username
+            " />
           )}
         />
         {errors.username && (
